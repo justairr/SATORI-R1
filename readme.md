@@ -103,7 +103,7 @@ torchrun --nproc-per-node=4 run.py \
 
 Download here:
 
-* 🔗 [SATORI-3B checkpoint](https://drive.google.com/mymodel.pth)
+* 🔗 [SATORI-3B checkpoint](..)
 * 🔗 [Qwen2.5-VL-3B-Instruct on Hugging Face](https://huggingface.co/Qwen/Qwen2.5-VL-3B-Instruct)
 
 ---
