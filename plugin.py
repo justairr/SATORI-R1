@@ -68,20 +68,12 @@ class BoundingBoxAccuracy(ORM):
         return [[x1 * scale_x, y1 * scale_y, x2 * scale_x, y2 * scale_y] for x1, y1, x2, y2 in bboxes]
 
     def union_iou(self, pred_boxes: List[List[float]], gt_boxes: List[List[float]]) -> float:
-        """
-        计算所有预测框并集与所有真实框并集的 IoU。
-        其中，每个框均为 [x1, y1, x2, y2]，并集可能不是规则的长方形，
-        使用 shapely 进行精确计算。
-        """
-        # 将每个边界框转换为 shapely 的 box 对象
         pred_polygons = [box(b[0], b[1], b[2], b[3]) for b in pred_boxes]
         gt_polygons = [box(b[0], b[1], b[2], b[3]) for b in gt_boxes]
 
-        # 计算各自的并集
         pred_union = unary_union(pred_polygons)
         gt_union = unary_union(gt_polygons)
 
-        # 计算交集面积与并集面积
         intersection_area = pred_union.intersection(gt_union).area
         union_area = pred_union.union(gt_union).area
 
