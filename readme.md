@@ -1,9 +1,9 @@
 
-# 🚀 SATORI: Spatially Anchored Task Optimization with Reinforcement Learning
+# <img src="./img/logo.png" width="50"> SATORI: Spatially Anchored Task Optimization with Reinforcement Learning
 
 🔗 This is the **official implementation** of **SATORI**.
 
-![📊 Overview](./img/page_1.png)
+![📊 Overview](./img/method_overview.png)
 
 ---
 
@@ -47,7 +47,7 @@ swift rlhf \
   --train_type full \
   --target_modules all-linear \
   --torch_dtype bfloat16 \
-  --dataset DATASET_PATH \
+  --dataset <DATASET_PATH> \
   --max_completion_length 512 \
   --num_train_epochs 1 \
   --per_device_train_batch_size 4 \
@@ -99,12 +99,13 @@ torchrun --nproc-per-node=4 run.py \
 
 ---
 
-## 💾 Pretrained Models
+## 💾 Trained Models
 
 Download here:
 
-* 🔗 [SATORI-3B checkpoint](..)
-* 🔗 [Qwen2.5-VL-3B-Instruct on Hugging Face](https://huggingface.co/Qwen/Qwen2.5-VL-3B-Instruct)
+* 🔗 [SATORI-3B]()
+
+More model architechures and sizes will be released soon! 🔜
 
 ---
 
@@ -113,6 +114,9 @@ Download here:
 We release the **VQA-Verify** dataset here: [link]() 🚀
 
 ---
+
+## Acknowledgements
+This project adapts from [ms-swift](https://github.com/modelscope/ms-swift.git) and [VLMEvalKit](https://github.com/open-compass/VLMEvalKit.git). Thanks for their great work! 🙏
 
 ## 🤝 Contributing
 
