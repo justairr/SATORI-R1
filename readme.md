@@ -103,7 +103,7 @@ torchrun --nproc-per-node=4 run.py \
 
 Download here:
 
-* 🔗 [SATORI-3B]()
+* 🔗 [SATORI-3B](https://huggingface.co/justairr/SATORI)
 
 More model architechures and sizes will be released soon! 🔜
 
@@ -111,7 +111,7 @@ More model architechures and sizes will be released soon! 🔜
 
 ## 📚 Dataset: VQA-Verify
 
-We release the **VQA-Verify** dataset here: [link]() 🚀
+We release the **VQA-Verify** dataset here: [link](https://huggingface.co/datasets/justairr/VQA-Verify) 🚀
 
 ---
 
