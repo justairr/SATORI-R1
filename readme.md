@@ -1,5 +1,5 @@
 
-# <img src="./img/logo.png" width="50"> SATORI: Spatially Anchored Task Optimization with Reinforcement Learning
+# <img src="./img/logo.png" width="50"> SATORI-R1: Incentivizing Multimodal Reasoning with Spatial Grounding and Verifiable Rewards
 
 🔗 This is the **official implementation** of **SATORI**.
 
