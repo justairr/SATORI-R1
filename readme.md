@@ -1,3 +1,5 @@
+# THE FOLLOWING IS AN OLD VERSION. WE WILL UPDATE THIS SOON.
+
 
 # <img src="./img/logo.png" width="50"> SATORI-R1: Incentivizing Multimodal Reasoning with Spatial Grounding and Verifiable Rewards
 
