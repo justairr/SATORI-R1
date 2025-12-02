@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SATORI-R1: Incentivizing Multimodal Reasoning through Explicit Visual Anchoring</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Noto+Serif:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- MathJax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            font-family: 'Google Sans', sans-serif;
+        }
+        .serif {
+            font-family: 'Noto Serif', serif;
+        }
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #ef4444, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .author-block {
+            display: inline-block;
+        }
+        .abstract-text {
+            text-align: justify;
+        }
+        /* No longer need placeholder-box styles, but keeping purely for safety if you revert */
+        .placeholder-box {
+            background-color: #f3f4f6;
+            border: 2px dashed #9ca3af;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4b5563;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header Section -->
+    <header class="pt-16 pb-8 text-center max-w-6xl mx-auto px-4">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+            <span class="gradient-text">SATORI-R1</span>: Incentivizing Multimodal Reasoning through Explicit Visual Anchoring
+        </h1>
+
+        <!-- Authors -->
+        <div class="text-lg md:text-xl mb-6">
+            <span class="author-block mx-2 text-blue-600 font-medium">Chuming Shen<sup>1</sup></span>
+            <span class="author-block mx-2 text-blue-600 font-medium">Wei Wei<sup>1</sup></span>
+            <span class="author-block mx-2 text-blue-600 font-medium">Xiaoye Qu<sup>1</sup></span>
+            <span class="author-block mx-2 text-blue-600 font-medium">Yu Cheng<sup>2</sup></span>
+        </div>
+
+        <!-- Affiliations -->
+        <div class="text-gray-600 mb-8 text-sm md:text-base">
+            <span class="block"><sup>1</sup>Huazhong University of Science and Technology</span>
+            <span class="block"><sup>2</sup>The Chinese University of Hong Kong</span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex justify-center gap-4 flex-wrap">
+            <a href="#" class="bg-gray-800 hover:bg-gray-700 text-white rounded-full px-5 py-2 transition flex items-center gap-2">
+                <i class="fas fa-file-pdf"></i>
+                <span>Paper</span>
+            </a>
+            <a href="#" class="bg-gray-800 hover:bg-gray-700 text-white rounded-full px-5 py-2 transition flex items-center gap-2">
+                <i class="fab fa-arxiv"></i>
+                <span>arXiv</span>
+            </a>
+            <a href="#" class="bg-gray-800 hover:bg-gray-700 text-white rounded-full px-5 py-2 transition flex items-center gap-2">
+                <i class="fab fa-github"></i>
+                <span>Code</span>
+            </a>
+            <a href="#dataset" class="bg-gray-800 hover:bg-gray-700 text-white rounded-full px-5 py-2 transition flex items-center gap-2">
+                <i class="fas fa-database"></i>
+                <span>VQA-Verify Data</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4">
+
+        <!-- Figure 1 -->
+        <section class="mb-12">
+            <img src="./pics/insight.svg" alt="Comparison of Reasoning Patterns" class="w-full h-auto rounded-lg shadow-sm border border-gray-200">
+            <p class="mt-3 text-sm text-gray-500 text-center max-w-3xl mx-auto">
+                <strong>Figure 1.</strong> Comparison of reasoning patterns. R1-like free-form reasoning (left) exhibits diffused attention, while SATORI's Glance-Focus-Think paradigm (right) guides the model's focus to task-relevant regions.
+            </p>
+        </section>
+
+        <!-- Abstract -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Abstract</h2>
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 abstract-text text-lg leading-relaxed text-gray-700">
+                <p>
+                    DeepSeek-R1 has demonstrated powerful textual reasoning capabilities through reinforcement learning (RL). Recent multi-modal studies often directly apply RL to generate R1-like free-form reasoning for multi-modal reasoning tasks. Unlike textual tasks, multi-modal tasks inherently demand comprehensive visual understanding to effectively address complex challenges. Therefore, such free-form reasoning faces two critical limitations in these tasks: (1) Extended reasoning chains diffuse visual focus away from task-relevant regions, degrading answer accuracy. (2) Unverifiable intermediate steps may substantially increase policy-gradient variance and computational costs overhead. 
+                </p>
+                <br>
+                <p>
+                    To this end, we introduce <strong>SATORI</strong> (Spatially Anchored Task Optimization with ReInforcement Learning), which explicitly structures multimodal reasoning process through a <strong>Glance-Focus-Think</strong> paradigm, converting free-form inference into verifiable reasoning. Specifically, SATORI generates global image captions, and shifts visual attention to task-focus regions via key bounding boxes, and finally leverages RL over verifiable reasoning patterns to yield the accurate and interpretable answer. Furthermore, we introduce <strong>VQA-Verify</strong>, a 12k dataset with answer-aligned captions and bounding boxes to facilitate the three-stage training. Experiments demonstrate that SATORI achieves consistent performance improvements across ten multimodal reasoning benchmarks, achieving up to <strong>15.7% accuracy improvement</strong> over R1-like baselines.
+                </p>
+            </div>
+        </section>
+
+        <!-- Insight I: Quantifying Visual Focus -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">Insight I: Quantifying Visual Focus</h2>
+            
+            <div class="flex flex-col md:flex-row gap-10 items-center">
+                <div class="flex-1">
+                    <p class="text-gray-700 leading-relaxed text-lg">
+                        A key insight of our work is that extended free-form reasoning often leads to <strong>"visual attention deficiency,"</strong> where the model loses focus on the image as the text sequence lengthens.
+                    </p>
+                    <p class="text-gray-700 leading-relaxed mt-4">
+                        To quantify this, we measure <strong>Region Attention Density (RAD)</strong>, which calculates the concentration of attention weights within task-relevant ground-truth regions. As shown in the figure, SATORI maintains significantly higher focus on relevant regions compared to free-form reasoning.
+                    </p>
+                </div>
+                <div class="flex-1 bg-white p-2 rounded-xl shadow-sm border border-gray-200">
+                    <img src="./pics/figure2.png" alt="RAD and Accuracy Distribution" class="w-full h-auto rounded-lg">
+                    <p class="mt-3 text-sm text-gray-500 text-center">
+                        <strong>Figure 2.</strong> RAD and accuracy distributions. The analysis reveals a positive correlation between attention density (RAD) and answer accuracy.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Insight II: Gradient Variance Reduction -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">Insight II: Gradient Variance Reduction</h2>
+            
+            <div class="flex flex-col md:flex-row gap-10 items-center">
+                <div class="flex-1">
+                    <p class="text-gray-700 leading-relaxed text-lg">
+                        Beyond visual focus, verifiable intermediate steps significantly stabilize training. In standard free-form reasoning, rewards are sparse and the thinking process is unstructured, leading to high variance in policy gradients.
+                    </p>
+                    <p class="text-gray-700 leading-relaxed mt-4">
+                        By introducing verifiable intermediate rewards (Caption and BBox), SATORI provides a smoother optimization landscape. This results in a <strong>~27% reduction in gradient variance</strong> and significantly faster convergence during RL training compared to baselines.
+                    </p>
+                </div>
+                <div class="flex-1 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                    <div class="grid grid-cols-2 gap-4 mb-2">
+                        <div>
+                            <img src="./pics/figure6a.png" alt="Variance Comparison" class="w-full h-auto rounded-lg shadow-sm border">
+                            <p class="text-xs text-center text-gray-500 mt-1">(a) Variance</p>
+                        </div>
+                        <div>
+                            <img src="./pics/figure6b.png" alt="Gradient Norm" class="w-full h-auto rounded-lg shadow-sm border">
+                            <p class="text-xs text-center text-gray-500 mt-1">(b) Grad Norm</p>
+                        </div>
+                    </div>
+                    <p class="mt-2 text-sm text-gray-500 text-center">
+                        <strong>Figure 6.</strong> SATORI exhibits lower gradient variance (left) and faster convergence (right) compared to free-form reasoning.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Method: SATORI & Figure 3 -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Methodology: SATORI</h2>
+            
+            <p class="text-gray-700 mb-6">
+                SATORI replaces the black-box free-form reasoning of standard MLLMs with a structured, verifiable pipeline. By mandating explicit grounding before reasoning, we reduce hallucination and improve convergence.
+            </p>
+
+            <!-- Figure 3 -->
+            <div class="flex justify-center mb-4">
+                <img src="./pics/figure3.png" alt="SATORI Method Overview" class="w-full h-auto rounded-lg shadow-sm">
+            </div>
+            <p class="mt-2 text-sm text-gray-500 text-center mb-8">
+                <strong>Figure 3.</strong> Overview of SATORI. The model follows a three-stage process: capturing global information (Glance), analyzing critical regions (Focus), and verifiable reasoning (Think), supervised by specific rewards.
+            </p>
+
+            <!-- Rewards & Algorithms -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 border border-gray-200 rounded-lg shadow-sm">
+                    <h3 class="text-lg font-bold text-gray-800 mb-3">Verifiable Reward Functions</h3>
+                    <p class="text-gray-600 mb-4 text-sm">We define explicit rewards for caption quality and spatial grounding accuracy.</p>
+                    <div class="overflow-x-auto text-sm">
+                        $$ \mathcal{R}_{caption} = \frac{1}{2}(BLEU\text{-}4_{smooth} + ROUGE\text{-}L_{F1}) $$
+                        <br><br>
+                        $$ \mathcal{R}_{bbox} = \text{Union IoU}(\mathcal{P}, \mathcal{G}) $$
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-6 border border-gray-200 rounded-lg shadow-inner">
+                    <h3 class="text-lg font-bold text-gray-800 mb-3">Union IoU Algorithm</h3>
+                    <div class="flex justify-center">
+                        <img src="./pics/algorithm.png" alt="Union IoU Algorithm" class="w-full h-auto rounded shadow-sm">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dataset (Figure 4) -->
+        <section class="mb-16" id="dataset">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">VQA-Verify Dataset</h2>
+            <div class="flex flex-col md:flex-row gap-8 items-center">
+                <div class="flex-1">
+                    <p class="text-gray-700 mb-4 leading-relaxed">
+                        To support explicit supervision, we introduce <strong>VQA-Verify</strong>, the first multimodal VQA dataset with both bounding box and caption annotations for reasoning tasks. It spans 17 benchmark datasets across three hierarchical categories.
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2 mb-4">
+                        <li><strong>Size:</strong> 12,000 Annotated Samples</li>
+                        <li><strong>Annotations:</strong> (Image, Question, Answer, Caption, BBox)</li>
+                        <li><strong>Categories:</strong> Perception, Reasoning, Multilingual</li>
+                    </ul>
+                </div>
+                <div class="flex-1">
+                    <img src="./pics/figure4.png" alt="VQA-Verify Dataset Overview" class="w-full h-auto rounded-lg shadow-sm">
+                    <p class="mt-2 text-sm text-gray-500 text-center">
+                        <strong>Figure 4.</strong> The VQA-Verify dataset composition, covering 17 benchmarks across 3 categories.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experimental Results (Figure 5 & 6) -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Experimental Results</h2>
+            
+            <p class="text-gray-700 mb-6">
+                SATORI achieves state-of-the-art performance among comparable models, significantly outperforming free-form reasoning baselines.
+            </p>
+
+            <!-- Table 1 -->
+            <div class="overflow-x-auto mb-8 shadow-sm rounded-lg">
+                <table class="min-w-full bg-white border border-gray-300 text-sm">
+                    <thead class="bg-gray-100 text-gray-800 font-bold border-b border-gray-300">
+                        <tr>
+                            <th class="py-3 px-4 text-left border-r">Method</th>
+                            <th class="py-3 px-2 text-center">MathVista</th>
+                            <th class="py-3 px-2 text-center">Math-V</th>
+                            <th class="py-3 px-2 text-center">MathVerse</th>
+                            <th class="py-3 px-2 text-center">Olypamid</th>
+                            <th class="py-3 px-2 text-center">WeMath</th>
+                            <th class="py-3 px-2 text-center">MMStar</th>
+                            <th class="py-3 px-2 text-center">MMBench</th>
+                            <th class="py-3 px-2 text-center">MMMU</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-700">
+                        <!-- Closed Source -->
+                        <tr class="bg-gray-50"><td colspan="9" class="py-2 px-4 font-semibold text-xs uppercase tracking-wide text-gray-500">Closed-Source Model</td></tr>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-medium">GPT-4o</td>
+                            <td class="text-center">63.8</td><td class="text-center">30.3</td><td class="text-center">39.4</td><td class="text-center">35.0</td><td class="text-center">68.8</td><td class="text-center">65.1</td><td class="text-center">84.3</td><td class="text-center">70.7</td>
+                        </tr>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-medium">Claude-3.5 Sonnet</td>
+                            <td class="text-center">61.8</td><td class="text-center">38.0</td><td class="text-center">-</td><td class="text-center">-</td><td class="text-center">-</td><td class="text-center">65.1</td><td class="text-center">81.7</td><td class="text-center">66.4</td>
+                        </tr>
+
+                        <!-- Open Source General (2-3B) -->
+                        <tr class="bg-gray-50"><td colspan="9" class="py-2 px-4 font-semibold text-xs uppercase tracking-wide text-gray-500">Open-Source General Model (2-3B)</td></tr>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-medium">Qwen2.5-VL-3B</td>
+                            <td class="text-center">61.2</td><td class="text-center">21.2</td><td class="text-center">47.6</td><td class="text-center">10.3</td><td class="text-center">22.1</td><td class="text-center">56.3</td><td class="text-center">60.8</td><td class="text-center">51.2</td>
+                        </tr>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-medium">InternVL3-2B</td>
+                            <td class="text-center">57.6</td><td class="text-center">21.7</td><td class="text-center">25.3</td><td class="text-center">9.6</td><td class="text-center">22.4</td><td class="text-center font-bold">61.1</td><td class="text-center font-bold">78.0</td><td class="text-center">48.7</td>
+                        </tr>
+
+                        <!-- Open Source Reasoning (2-3B) -->
+                        <tr class="bg-gray-50"><td colspan="9" class="py-2 px-4 font-semibold text-xs uppercase tracking-wide text-gray-500">Open-Source Reasoning Model (2-3B)</td></tr>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-medium">R1-VL-2B</td>
+                            <td class="text-center">52.1</td><td class="text-center">17.1</td><td class="text-center">26.2</td><td class="text-center">-</td><td class="text-center">-</td><td class="text-center">49.8</td><td class="text-center">-</td><td class="text-center">-</td>
+                        </tr>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-medium">Aquila-VL-2B</td>
+                            <td class="text-center">59.0</td><td class="text-center">18.4</td><td class="text-center">26.2</td><td class="text-center">-</td><td class="text-center">-</td><td class="text-center">54.9</td><td class="text-center">75.2</td><td class="text-center">46.9</td>
+                        </tr>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-medium">InternVL2.5-2B-MPO</td>
+                            <td class="text-center">53.4</td><td class="text-center">-</td><td class="text-center">-</td><td class="text-center">-</td><td class="text-center">-</td><td class="text-center">54.9</td><td class="text-center">70.7</td><td class="text-center">44.6</td>
+                        </tr>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-medium">VLAA-Thinker-3B</td>
+                            <td class="text-center">61.0</td><td class="text-center">24.4</td><td class="text-center">36.4</td><td class="text-center">-</td><td class="text-center">23.2</td><td class="text-center">-</td><td class="text-center">-</td><td class="text-center">-</td>
+                        </tr>
+
+                        <!-- Our Model (3B) -->
+                        <tr class="bg-gray-50"><td colspan="9" class="py-2 px-4 font-semibold text-xs uppercase tracking-wide text-gray-500">Our Model (3B)</td></tr>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-bold text-gray-700">SATORI-3B w/o thinking</td>
+                            <td class="text-center">60.9</td><td class="text-center">21.7</td><td class="text-center">32.2</td><td class="text-center">10.9</td><td class="text-center">25.6</td><td class="text-center">55.9</td><td class="text-center">76.5</td><td class="text-center">54.7</td>
+                        </tr>
+                        <tr class="border-b hover:bg-gray-50 bg-blue-50">
+                            <td class="py-2 px-4 border-r font-bold text-blue-800">SATORI-3B</td>
+                            <td class="text-center font-bold text-blue-800">67.4</td><td class="text-center font-bold text-blue-800">26.1</td><td class="text-center font-bold text-blue-800">39.8</td><td class="text-center font-bold text-blue-800">13.5</td><td class="text-center font-bold text-blue-800">30.1</td><td class="text-center font-bold text-blue-800">56.7</td><td class="text-center">76.9</td><td class="text-center font-bold text-blue-800">56.9</td>
+                        </tr>
+
+                        <!-- Open Source General (7-11B) -->
+                        <tr class="bg-gray-50"><td colspan="9" class="py-2 px-4 font-semibold text-xs uppercase tracking-wide text-gray-500">Open-Source General Model (7-11B)</td></tr>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-medium">InternVL2.5-8B</td>
+                            <td class="text-center">64.4</td><td class="text-center">19.7</td><td class="text-center">39.5</td><td class="text-center">12.3</td><td class="text-center">53.5</td><td class="text-center">63.2</td><td class="text-center">82.5</td><td class="text-center">56.2</td>
+                        </tr>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-medium">InternVL3-8B</td>
+                            <td class="text-center">71.6</td><td class="text-center">29.3</td><td class="text-center">39.8</td><td class="text-center">-</td><td class="text-center">37.1</td><td class="text-center">68.7</td><td class="text-center">82.1</td><td class="text-center">62.2</td>
+                        </tr>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-medium">Qwen2.5-VL-7B</td>
+                            <td class="text-center">68.2</td><td class="text-center">25.4</td><td class="text-center">47.9</td><td class="text-center">20.2</td><td class="text-center">62.1</td><td class="text-center">64.1</td><td class="text-center">82.2</td><td class="text-center">58.0</td>
+                        </tr>
+
+                        <!-- Open Source Reasoning (7-11B) -->
+                        <tr class="bg-gray-50"><td colspan="9" class="py-2 px-4 font-semibold text-xs uppercase tracking-wide text-gray-500">Open-Source Reasoning Model (7-11B)</td></tr>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-medium">Adora-7B</td>
+                            <td class="text-center">73.5</td><td class="text-center">23.0</td><td class="text-center">50.1</td><td class="text-center">20.1</td><td class="text-center">64.2</td><td class="text-center">-</td><td class="text-center">-</td><td class="text-center">-</td>
+                        </tr>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-medium">InternVL2.5-8B-MPO</td>
+                            <td class="text-center">68.9</td><td class="text-center">21.5</td><td class="text-center">35.5</td><td class="text-center">7.8</td><td class="text-center">53.5</td><td class="text-center">62.5</td><td class="text-center">76.5</td><td class="text-center">-</td>
+                        </tr>
+                         <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-medium">R1-Onevision-7B</td>
+                            <td class="text-center">64.1</td><td class="text-center">23.5</td><td class="text-center">47.1</td><td class="text-center">17.3</td><td class="text-center">61.8</td><td class="text-center">-</td><td class="text-center">-</td><td class="text-center">-</td>
+                        </tr>
+                         <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-medium">OpenVLThinker-7B</td>
+                            <td class="text-center">70.2</td><td class="text-center">25.3</td><td class="text-center">47.9</td><td class="text-center">20.1</td><td class="text-center">64.3</td><td class="text-center">-</td><td class="text-center">-</td><td class="text-center">-</td>
+                        </tr>
+                         <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-medium">MM-Eureka-7B</td>
+                            <td class="text-center">73.0</td><td class="text-center">26.9</td><td class="text-center">50.3</td><td class="text-center">20.1</td><td class="text-center font-bold">66.1</td><td class="text-center">-</td><td class="text-center">-</td><td class="text-center">-</td>
+                        </tr>
+                         <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-medium">VL-Rethinker-7B</td>
+                            <td class="text-center">73.7</td><td class="text-center">30.1</td><td class="text-center">54.6</td><td class="text-center">-</td><td class="text-center">-</td><td class="text-center">-</td><td class="text-center">-</td><td class="text-center">56.7</td>
+                        </tr>
+                         <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-medium">MMR1-7B</td>
+                            <td class="text-center">72.0</td><td class="text-center">31.8</td><td class="text-center">55.4</td><td class="text-center">-</td><td class="text-center">-</td><td class="text-center">-</td><td class="text-center">-</td><td class="text-center">-</td>
+                        </tr>
+
+                        <!-- Our Model (7B) -->
+                        <tr class="bg-gray-50"><td colspan="9" class="py-2 px-4 font-semibold text-xs uppercase tracking-wide text-gray-500">Our Model (7B)</td></tr>
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="py-2 px-4 border-r font-bold text-gray-700">SATORI-7B w/o thinking</td>
+                            <td class="text-center">71.3</td><td class="text-center">30.2</td><td class="text-center">49.2</td><td class="text-center">20.4</td><td class="text-center">64.1</td><td class="text-center font-bold">69.7</td><td class="text-center">82.0</td><td class="text-center">60.6</td>
+                        </tr>
+                        <tr class="border-b hover:bg-gray-50 bg-blue-50">
+                            <td class="py-2 px-4 border-r font-bold text-blue-800">SATORI-7B</td>
+                            <td class="text-center font-bold text-blue-800">76.2</td><td class="text-center font-bold text-blue-800">32.7</td><td class="text-center font-bold text-blue-800">56.9</td><td class="text-center font-bold text-blue-800">23.7</td><td class="text-center">65.2</td><td class="text-center">69.5</td><td class="text-center font-bold text-blue-800">82.9</td><td class="text-center font-bold text-blue-800">63.6</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+             <!-- Variance Analysis & Figure 6 -->
+             <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Training Stability Analysis</h3>
+                <p class="text-gray-700 mb-6">
+                    A major benefit of SATORI is the reduction of policy-gradient variance. By introducing verifiable intermediate rewards (Caption and BBox), we provide a smoother optimization landscape compared to the sparse rewards of free-form reasoning.
+                </p>
+                <!-- Split Figure 6 into 6a and 6b if you have them separate, or use one image if combined -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <img src="./pics/figure6a.png" alt="Variance Comparison" class="w-full h-auto rounded-lg shadow-sm mb-2">
+                        <p class="text-xs text-center text-gray-500">(a) Variance Comparison</p>
+                    </div>
+                    <div>
+                        <img src="./pics/figure6b.png" alt="Gradient Norm Convergence" class="w-full h-auto rounded-lg shadow-sm mb-2">
+                        <p class="text-xs text-center text-gray-500">(b) Gradient Norm</p>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm text-gray-500 text-center">
+                    <strong>Figure 6.</strong> SATORI exhibits lower gradient variance (left) and faster convergence (right) compared to free-form reasoning.
+                </p>
+             </div>
+        </section>
+
+        <!-- Citation -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Citation</h2>
+            <div class="bg-gray-800 text-gray-200 p-6 rounded-lg overflow-x-auto shadow-md">
+<pre class="font-mono text-sm">
+@article{shen2025satori,
+  title={SATORI-R1: Incentivizing Multimodal Reasoning through Explicit Visual Anchoring},
+  author={Shen, Chuming and Wei, Wei and Qu, Xiaoye and Cheng, Yu},
+  journal={arXiv preprint},
+  year={2025}
+}
+</pre>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-8 text-gray-400 text-sm">
+        <p>Based on the Academic Project Page Template.</p>
+    </footer>
+
+</body>
+</html>
